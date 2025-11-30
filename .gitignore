@@ -1,0 +1,13 @@
+# Client
+client/node_modules/
+client/dist/
+
+# Server
+server/node_modules/
+server/dist/
+
+# VS Code settings
+.vscode/
+
+# Logs
+*.log
