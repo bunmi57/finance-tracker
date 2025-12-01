@@ -2,20 +2,22 @@ import React from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import Navbar from './components/Navbar'
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Home from './Pages/Home';
+import Login from './Pages/Login';
 
 function App() {
   
 
   return (
     <>
-      <div>
-        <Navbar/>
-        <Header />
-        <Footer />
-      </div>
+      <Router> 
+
+        <Routes>
+          <Route path="/" element={<Home />}/>
+          <Route path="/login" element={<Login />}/>
+        </Routes>
+      </Router>
     </>
   )
 }
