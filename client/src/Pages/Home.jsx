@@ -8,6 +8,7 @@ function Home(){
         <>
         <Header/>
         <Link to="/login"> Log In</Link>
+        <Link to="/register"> Register </Link>
         </>
     );
 }

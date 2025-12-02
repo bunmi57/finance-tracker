@@ -1,15 +1,21 @@
 @import "tailwindcss";
 
-*{
-  background-color: white;
+.login{
+  color: red;
 }
 
+
+/* *{
+  background-color: white;
+} */
+
+/* 
 header{
   background-color: black;
   margin:auto -16px;
   padding:16px;
   color:white;
-}
+} */
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
