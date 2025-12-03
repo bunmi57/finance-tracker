@@ -1,12 +1,16 @@
 import React from "react";
+import {Link} from "react-router-dom";
+import PaymentsIcon from '@mui/icons-material/Payments';
+
 
 function Navbar(){
 
     return(
         <>
             <nav className="navbar navbar-expand bg-body-tertiary">
-                <div className="container-fluid">
-                    <a className="navbar-brand" href="#">Finance tracker</a>
+                <div className="container-fluid navbar">
+                    <PaymentsIcon className="me-2 logo"/>
+                    <a className="navbar-brand brand" href="#">Finance tracker</a>
                     
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
@@ -17,13 +21,13 @@ function Navbar(){
 
                     <div className="navbar-collapse" id="navbarNav">
                     
-                        <ul className="navbar-nav">
+                        <ul className="navbar-nav navbar-links">
                             <li className="nav-item">
                             <a className="nav-link active" aria-current="page" href="#">Home</a>
                             </li>
 
                             <li className="nav-item">
-                            <a className="nav-link" href="#">Income</a>
+                            <a className="nav-link" href="#">Budget</a>
                             </li>
 
                             <li className="nav-item">
@@ -31,7 +35,11 @@ function Navbar(){
                             </li>
 
                             <li className="nav-item">
-                            <a className="nav-link login" href="#">Test</a>
+                            <Link className="nav-link" to="/login">Log in</Link>
+                            </li>
+
+                            <li className="nav-item">
+                            <Link className="nav-link" to="/register">Register</Link>
                             </li>
 
                             {/* <li className="nav-item">

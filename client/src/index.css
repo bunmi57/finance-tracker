@@ -1,8 +1,30 @@
 @import "tailwindcss";
 
-.login{
-  color: red;
+body {
+  font-family: "Montserrat", sans-serif;
 }
+
+.navbar {
+ /* background-color: #f5ba13; */
+ /* background-color: #EBB8DD; */
+  background-color: #253342;
+
+}
+
+.navbar-links .nav-link{
+  color: white !important;
+}
+
+.navbar-brand.brand{
+  color:white;
+}
+
+.logo{
+  color:white;
+}
+
+
+
 
 
 /* *{

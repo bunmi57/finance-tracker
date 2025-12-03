@@ -5,11 +5,11 @@ import {Link} from "react-router-dom";
 function Home(){
 
     return (
-        <>
+        <div>
         <Header/>
-        <Link to="/login"> Log In</Link>
-        <Link to="/register"> Register </Link>
-        </>
+        {/* <Link to="/login"> Log In</Link> */}
+        {/* <Link to="/register"> Register </Link> */}
+        </div>
     );
 }
 
