@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "./Navbar";
+import Navbarupdate from "./Navbarupdate";
 
 
 
@@ -9,7 +10,8 @@ function Header(){
         // <header>Finace Tracker</header>
         <>
         <header>
-            <Navbar />
+            {/* <Navbar /> */}
+            <Navbarupdate/>
         </header> 
         </>
     );

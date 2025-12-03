@@ -27,6 +27,25 @@ body {
   background-color: yellow;
 }
 
+.container{
+  display: flex;
+  gap: 1rem;
+  margin: 0px;
+  padding-top: 5px;
+  background-color: #EBB8DD;
+  font-family: "Montserrat", sans-serif;
+  max-width:100%; /*spans full width*/
+}
+.brand{
+  font-weight: bold;
+}
+.login{
+  margin-left: auto; /*pushes login bar all the way to the end */
+}
+
+.navitem{
+  color: 253342;
+}
 
 
 
