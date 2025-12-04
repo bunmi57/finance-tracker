@@ -1,10 +1,10 @@
 import React from "react";
 
 
-function Form(){
+function Loginform(){
     return (
         <>
-        <form>
+        <form className="form">
         <div className="mb-3">
             <label for="exampleInputEmail1" className="form-label">Email address</label>
             <input type="email" name="username" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"/>
@@ -20,4 +20,4 @@ function Form(){
   );
 }
 
-export default Form;
+export default Loginform;

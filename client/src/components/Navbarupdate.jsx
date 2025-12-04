@@ -6,7 +6,7 @@ function Navbarupdate(){
     return (
         <div className="container">
             <div>
-                <PaymentsIcon/>
+                <PaymentsIcon className="logo"/>
             </div>
             <div className="brand">
                 <p>Finance Tracker</p>
