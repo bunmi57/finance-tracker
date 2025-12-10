@@ -1,11 +1,12 @@
 import React from "react"
-import Loginform from "../components/Loginform";
+import Registerform from "../components/Registerform";
 
 
 function Register(){
     
     return (
         <>
+            
             <div className="grid-container">
                 <div className="container-form">
                     <div>
@@ -17,7 +18,7 @@ function Register(){
                 </div>
 
                 <div className="form">
-                    <Loginform/>
+                    <Registerform/>
                 </div>
 
             </div>
