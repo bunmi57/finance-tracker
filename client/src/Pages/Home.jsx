@@ -3,6 +3,7 @@ import React from "react";
 import Header from "../components/Header";
 import {Link} from "react-router-dom";
 import api from "../api/axios";
+import Expense from "./Expense";
 
 function Home(){
 
@@ -22,6 +23,13 @@ function Home(){
         <Header/>
         {/* <Link to="/login"> Log In</Link> */}
         {/* <Link to="/register"> Register </Link> */}
+        <div>
+            <Link to="/expense"> Expense </Link>
+        </div>
+        
+        <div>
+           <Link to="/savings"> Savings </Link>
+        </div>
 
         </div>
     );
