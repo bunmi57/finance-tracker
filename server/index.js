@@ -38,6 +38,12 @@ db.connect();
 	date_transaction DATE ,
 	note TEXT
 );
+    //To visualise list 
+    let users = [
+        {id: 1, user_id: 1, amount:400, type_transaction:"expense", category:"transportation",date_transaction:"2025-10-11", note:"makeup items"},
+        {id: 2, user_id: 2, amount:300, type_transaction:"income", category:"income",date_transaction:"2025-10-15", note:"Salary"},
+
+    ];
  */
 
 
@@ -61,7 +67,27 @@ app.get("/", async (req,res) =>{
     res.send("Server is running!");
 });
 
+/*
+    Dashboard route - to show transactions after user logs in
 
+    - run function view Transaction const transaction = await viewTransaction
+    - viewTransaction function (sync function viewTransction()) selects data from database "SELECT expense from transactions JOIN users ON user.id(//means users table, field id) = user_id(foreign key in the specified table in this case, transactions) WHERE user_id = $1",[currentUserId]
+    - result.rows.forEach((expense)=>{ do something }) 
+    - pass over data to frontend res.render("index.ejs",{ //remember, ejs is not used but the idea is to render the data extracted from the database
+        countries:countries
+        total: countries.length,
+        coloor:currentUser.color. to use can call a function getCurrentUser
+    }) 
+    - async function getCurrentUser(){
+        const result = await db.query("SELECT * FROM users");
+        users = result.rows;
+        return users.find((user)=> user.id == currentUserId);
+    }
+    - const currentUser = await getCurrentUser();
+
+
+
+*/
 
 
 
@@ -88,8 +114,8 @@ app.post("/register", async (req,res) => {
     //Get the user email and password from input form 
     const email = req.body.username;
     const password = req.body.password;
-    console.log(email);
-    console.log(password);
+    // console.log(email);
+    // console.log(password);
 
    
     try {
@@ -129,10 +155,10 @@ app.post("/login", (req,res) => {
 
 /*
     Create route for new transaction for specific user (implement POST /transactions)
-    - Use email logged in to get id of user 
+    - Use email logged in to get id of user - done
     - create a frontend table for expenses with columns Description, category, amount and notes
-    - read data from req.body 
-    - get the user id to identify logged in user 
+    - read data from req.body  - done
+    - get the user id to identify logged in user - done
     - Insert the entered data into the DB of the specific user 
     - link create/add button in frontend to add info to transaction table 
 
@@ -144,40 +170,52 @@ app.post("/expense", async (req,res) => {
     const description = req.body.description;
     const category = req.body.category;
     const amount = req.body.amount;
+    const date = req.body.date;
     const note = req.body.note;
 
-    //Log the recived data for debugging 
-    console.log(description);
-    console.log(category);
-    console.log(amount);
-    console.log(note);
+    //Log the received data for debugging 
+    // console.log(description);
+    // console.log(category);
+    // console.log(amount);
+    // console.log(date);
+    // console.log(note);
+
+    //define type of transaction
+    const type_transaction = "expense";
 
     //For testing, define the user's email maually 
-    //Later, this should be obtained from the qunthenticated session
-    // const email = process.env.TEST_EMAIL;
-    const email = "email34@gmail.com";
+    //Later, this should be obtained from the aunthenticated session
+    const email = process.env.TEST_EMAIL;
+    // const email = "email34@gmail.com";
 
     try {
         //Query the database to get the user ID associated with the email
         const result = await db.query("SELECT id FROM users WHERE email = $1 ",[email]);
-        if (result.rows.length > 0) { 
-            //if user exists, get the user ID 
-            const user_id = result.rows[0].id;
-            console.log(user_id);
-            //TODO: you can now user user_id to associate the new expense with the user
-        }else{ 
-            //user does not exist,respond with 404
-            //Frontend should handle this and redirect the user to register 
-            return res.status(404).json({
-                message:"User not found"
-            });//Important: return to prevent further execution
+
+        //If user does not exist, send status 404
+        //Frontend should handle this and redirect the user to register 
+        if (result.rows.length === 0) {
+        return res.status(404).json({ message: "User not found" });
         }
 
-    }catch (err){
-        //Log any database errors for debugginv
-        console.log(err);
-    }
+        //if user exists, get the user ID 
+        const user_id = result.rows[0].id;
+        // console.log(user_id);
 
+        //Insert the extracted data into the transactiin table  of the specific user
+        //INSERT does not return rows by default, add RETURNING * to return inseerted record
+        const expense = await db.query( "INSERT INTO transactions (user_id,amount,type_transaction,category,date_transaction,note,description) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING * ",[user_id,amount,type_transaction,category,date,note,description]);
+
+        return res.status(201).json({
+            message: "Expense created successfully",
+            expense: expense.rows[0],
+        });
+
+    }catch (err){
+        //Log any database errors for debugging
+        console.error(err);
+        return res.status(500).json({ message: "Server error" });
+    }
 
 });
 
