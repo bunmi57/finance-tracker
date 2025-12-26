@@ -5,14 +5,15 @@ import { useNavigate } from "react-router-dom";
 
 
 function Item(){
-    //React rouet to navigate between pages
+    //React route to navigate between pages
     const navigate = useNavigate();
 
     //Get today's date 
     const currentDate = new Date();
 
-    //Convert today's nate to (YYY-MM-DD) format 
+    //Convert today's date to (YYY-MM-DD) format 
     const todayDate = currentDate.toISOString().slice(0, 10);
+
 
     //State to store form input values for a single expense
     const [item, setItem] = useState({
@@ -23,11 +24,15 @@ function Item(){
         note: ""
     });
 
+    //Error state, stores backend validation or server error messages
+    const [error, setError] = useState("");
+
+
     //Handles form submission and sends expense data to the backend
     async function handleSubmit(event){
         //prevents the default browser form submission(page reload)
         event.preventDefault();
-        console.log("client here1")
+
         //Send expense data to the backend API
         try{
             const res = await api.post("/expense", {
@@ -40,7 +45,6 @@ function Item(){
 
             //Log successful response
             // console.log(res.data);
-            console.log("client here2");
 
             //Reset form fields after sucessful submission
             setItem({      
@@ -51,22 +55,28 @@ function Item(){
                 note: ""
             });
 
-            console.log("client here3");
-
         }catch(err){ 
             //If backend returns 404, user does not exist, redirect to register page
             if (err.response?.status === 404){
                 navigate("/register");
+            }
+            //Uses optional chaining(?) to prevent crashes if response or data is undefined
+            else if (err.response?.data?.message){
+                //Backend validation error (e.g invalid amount)
+                setError(err.response.data.message)
             }else{
                 //Log any unexpected or server-related errors
-                console.error(err);
+                console.log(err);
+                setError("Something went wrong.Please try again.")
             }
+
         }
 
     }
 
     //updates state as the user types into the form inputs
     function handleChange(event){
+        setError("");
         const {name, value} = event.target;
 
         //preserve existing state while updating the changed field
@@ -86,16 +96,6 @@ function Item(){
         <div >
             
             <h1>Expense</h1>
-           
-            {/* change to one form */}
-            {/* <form onSubmit={handleSubmit}>
-            <input name="description" ... />
-            <input name="category" ... />
-            <input name="amount" ... />
-            <input name="note" ... />
-            <button type="submit">+</button>
-            </form> */}
-
 
             <form onSubmit={handleSubmit} >
                 <div>
@@ -130,8 +130,7 @@ function Item(){
                     placeholder="Enter amount"
                     value={item.amount}/>
                 </div>
-
-                
+      
                 <div> 
                     {/* Notes  */}
                     <label>Note</label>
@@ -155,37 +154,21 @@ function Item(){
                     max={todayDate} />    
                 </div>
 
-
+                {/* Show error message  */}
+                {error && (<p style={{color: "red", marginBottom: "10px"}} > {error} </p>)}
                 
-
-                <div>
-                
+                <div>   
                     <button type="submit" > Submit </button>
-
                 </div>
-
-                
-
-            
-
-
-
-
-
-
-
-
 
             </form>
 
         </div>
-
 
         </>
         
     );
 
 }
-
 
 export default Item;
