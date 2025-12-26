@@ -9,7 +9,8 @@ const app = express();
 const port = 3000;
 const saltRounds = 10;
 
-app.use(cors()); // allow all origins
+// allow all origins
+app.use(cors()); 
 
 //Parse JSON body
 app.use(express.json());
@@ -46,17 +47,6 @@ db.connect();
     ];
  */
 
-
-
-// //Test transaction table
-    // const result = await db.query(
-    //     "INSERT INTO transactions (user_id,amount,type_transaction,category,date_transaction,note) VALUES ($1, $2,$3,$4,$5,$6) RETURNING *hgp. " ,[1, 400, "income","housing","2025-10-14", "cloth items"]);
-    // console.log("Transaction table");
-    // console.log(result.rows);
-
-
-
-
 //Test route 
 app.get("/test",(req,res) => {
     res.json({message:"CORS is working"});
@@ -84,12 +74,7 @@ app.get("/", async (req,res) =>{
         return users.find((user)=> user.id == currentUserId);
     }
     - const currentUser = await getCurrentUser();
-
-
-
 */
-
-
 
 
 /*
@@ -117,7 +102,6 @@ app.post("/register", async (req,res) => {
     // console.log(email);
     // console.log(password);
 
-   
     try {
         //Check if user already exists in the database
         const findUser = await db.query("SELECT * FROM users WHERE email = $1 ", [email]);
@@ -154,6 +138,8 @@ app.post("/login", (req,res) => {
 });
 
 /*
+    Expense route
+
     Create route for new transaction for specific user (implement POST /transactions)
     - Use email logged in to get id of user - done
     - create a frontend table for expenses with columns Description, category, amount and notes
@@ -188,6 +174,18 @@ app.post("/expense", async (req,res) => {
     const email = process.env.TEST_EMAIL;
     // const email = "email34@gmail.com";
 
+    //Error handling for invalid Amount field 
+    const amountNum = Number(amount);
+
+    if (!amount || isNaN(amountNum)){
+        return res.status(400).json({
+            message: "Amount must be a valid number"
+        });
+    }
+
+    //Use parseFloat to return the first floating-point number found within a string "3.14" becomes 3.14
+    const amountValue = parseFloat(amount);
+
     try {
         //Query the database to get the user ID associated with the email
         const result = await db.query("SELECT id FROM users WHERE email = $1 ",[email]);
@@ -204,7 +202,7 @@ app.post("/expense", async (req,res) => {
 
         //Insert the extracted data into the transactiin table  of the specific user
         //INSERT does not return rows by default, add RETURNING * to return inseerted record
-        const expense = await db.query( "INSERT INTO transactions (user_id,amount,type_transaction,category,date_transaction,note,description) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING * ",[user_id,amount,type_transaction,category,date,note,description]);
+        const expense = await db.query( "INSERT INTO transactions (user_id,amount,type_transaction,category,date_transaction,note,description) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING * ",[user_id,amountValue,type_transaction,category,date,note,description]);
 
         return res.status(201).json({
             message: "Expense created successfully",
@@ -214,6 +212,13 @@ app.post("/expense", async (req,res) => {
     }catch (err){
         //Log any database errors for debugging
         console.error(err);
+
+        //catch specific post-gres specific error 
+        if (err.code === "22P02"){
+            return res.status(400).json({
+                message:"Invalid numeric input"
+            });
+        }
         return res.status(500).json({ message: "Server error" });
     }
 
