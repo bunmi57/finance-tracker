@@ -177,7 +177,12 @@ app.post("/expense", async (req,res) => {
     //Error handling for invalid Amount field 
     const amountNum = Number(amount);
 
-    if (!amount || isNaN(amountNum)){
+    if ( 
+         amount === undefined ||
+         amount === null ||
+         amount === "" ||
+         isNaN(Number(amount))
+        ){
         return res.status(400).json({
             message: "Amount must be a valid number"
         });
@@ -186,6 +191,12 @@ app.post("/expense", async (req,res) => {
     //Use parseFloat to return the first floating-point number found within a string "3.14" becomes 3.14
     const amountValue = parseFloat(amount);
 
+    if (amountValue <= 0) {
+    return res.status(400).json({
+        message: "Amount must be greater than zero"
+    });
+    }
+    
     try {
         //Query the database to get the user ID associated with the email
         const result = await db.query("SELECT id FROM users WHERE email = $1 ",[email]);
