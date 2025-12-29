@@ -196,7 +196,7 @@ app.post("/expense", async (req,res) => {
         message: "Amount must be greater than zero"
     });
     }
-    
+
     try {
         //Query the database to get the user ID associated with the email
         const result = await db.query("SELECT id FROM users WHERE email = $1 ",[email]);
@@ -231,6 +231,31 @@ app.post("/expense", async (req,res) => {
             });
         }
         return res.status(500).json({ message: "Server error" });
+    }
+
+});
+
+//Implement GET/transactions
+/*
+    - Get the user id
+    - filter transactions by user id 
+    - return only the user's transactions 
+*/
+
+app.get("/expense", async (req,res) => {
+
+    try{
+
+        //For testing, define the user's email maually 
+        //Later, this should be obtained from the aunthenticated session
+        const email = process.env.TEST_EMAIL;
+
+        //Query the database to get the user ID associated with the email
+        const result = await db.query("SELECT id FROM users WHERE email = $1 ",[email]);
+        console.log(result);
+
+    }catch (err){
+        console.log(err)
     }
 
 });
