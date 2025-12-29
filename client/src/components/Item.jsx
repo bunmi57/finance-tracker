@@ -93,9 +93,44 @@ function Item(){
     return (
         <>
             
-        <div >
+        <div className="expense" >
             
             <h1>Expense</h1>
+
+            {/* 
+            create a component to automatically add new entries
+            Add new entries to table when user clicks + */}
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Note</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {/* rows will go here */}
+                    <tr>
+                        <td>Rent</td>
+                        <td>Housing</td>
+                        <td>1000</td>
+                        <td> January rent</td>
+                        <td>2025-01-01</td>
+                    </tr>
+                    <tr>
+                        <td>Uber</td>
+                        <td>Transportation</td>
+                        <td>50</td>
+                        <td> Uber fee</td>
+                        <td>2025-02-15</td>
+                    </tr>
+                </tbody>
+
+            </table>
 
             <form onSubmit={handleSubmit} >
                 <div>

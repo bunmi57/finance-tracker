@@ -96,6 +96,25 @@ body {
   word-wrap: break-word;
 }
 
+/* Expense styling */
+.expense {
+  display: flex;
+  flex-direction: column; /*stack items vertically */
+  gap:16px;  /* space between title and forom */
+}
+
+.expense table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.expense th,
+.expense td {
+  border: 1px solid red;
+  padding: 8px;
+  text-align: left;
+}
+
 
 /* *{
   background-color: white;
