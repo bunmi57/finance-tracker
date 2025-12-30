@@ -99,105 +99,130 @@ function Item(){
             <h1>Expense</h1>
 
             {/* 
-            create a component to automatically add new entries
+            Enter data to table 
+            Display data in database
             Add new entries to table when user clicks + */}
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Category</th>
-                        <th>Amount</th>
-                        <th>Note</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {/* rows will go here */}
-                    <tr>
-                        <td>Rent</td>
-                        <td>Housing</td>
-                        <td>1000</td>
-                        <td> January rent</td>
-                        <td>2025-01-01</td>
-                    </tr>
-                    <tr>
-                        <td>Uber</td>
-                        <td>Transportation</td>
-                        <td>50</td>
-                        <td> Uber fee</td>
-                        <td>2025-02-15</td>
-                    </tr>
-                </tbody>
-
-            </table>
-         {/* //To visualise list 
-        let users = [
-            {id: 1, user_id: 1, amount:400, type_transaction:"expense", category:"transportation",date_transaction:"2025-10-11", note:"makeup items"},
-            {id: 2, user_id: 2, amount:300, type_transaction:"income", category:"income",date_transaction:"2025-10-15", note:"Salary"},
-
-        ]; 
-        users.map((user)=>{
-            user.amount
-            })
         
-        */}
+            <form onSubmit={handleSubmit}>
+                <table>
+                    {/* Table heading */}
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Note</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
 
-            <form onSubmit={handleSubmit} >
-                <FormInput
-                    title="Description"
-                    handleChange={handleChange}
-                    type="text"
-                    name="description"
-                    placeholder="Enter description"
-                    value={item.description}         
-                />
-                <FormInput
-                    title="Category"
-                    handleChange={handleChange}
-                    type="text"
-                    name="category"
-                    placeholder="Enter category"
-                    value={item.category}         
-                />
-                <FormInput
-                    title="Amount"
-                    handleChange={handleChange}
-                    type="number"
-                    name="amount"
-                    placeholder="Enter number"
-                    value={item.amount}         
-                />
-                <FormInput
-                    title="Note"
-                    handleChange={handleChange}
-                    type="text"
-                    name="note"
-                    placeholder="Enter note"
-                    value={item.note}         
-                />
-                <div> 
-                    {/* Date  */}
-                    <label>Date</label>
-                    <input 
-                    onChange={handleChange}
-                    type="date"
-                    name="date"
-                    value={item.date}
-                    min="2018-01-01"
-                    max={todayDate} />    
-                </div>
+                    <tbody>
+                        {/* rows will go here */}
+                        <tr>
+                            <td>Rent</td>
+                            <td>Housing</td>
+                            <td>1000</td>
+                            <td> January rent</td>
+                            <td>2025-01-01</td>
+                        </tr>
+                        <tr>
+                            <td>Uber</td>
+                            <td>Transportation</td>
+                            <td>50</td>
+                            <td> Uber fee</td>
+                            <td>2025-02-15</td>
+                        </tr>
 
-                {/* Show error message  */}
-                {error && (<p style={{color: "red", marginBottom: "10px"}} > {error} </p>)}
-                
-                <div>   
-                    <button type="submit" > Submit </button>
-                </div>
+                        <tr>
+                            <td>               
+                                <FormInput
+                                    title="Description"              // Label shown above the input
+                                    handleChange={handleChange}       // Updates state when user types
+                                    type="text"                      // Text input
+                                    name="description"               // Matches item.description in state
+                                    placeholder="Enter description"  // Hint text inside input
+                                    value={item.description}         // Controlled input value        
+                                />
+                            </td>
 
+                            <td>                
+                                <FormInput
+                                    title="Category"
+                                    handleChange={handleChange}
+                                    type="text"
+                                    name="category"
+                                    placeholder="Enter category"
+                                    value={item.category}         
+                                />
+                            </td>
+
+                            <td>               
+                                <FormInput
+                                    title="Amount"
+                                    handleChange={handleChange}
+                                    type="number"
+                                    name="amount"
+                                    placeholder="Enter number"
+                                    value={item.amount}         
+                                />
+                            </td>
+
+                            <td>               
+                                <FormInput
+                                    title="Note"
+                                    handleChange={handleChange}
+                                    type="text"
+                                    name="note"
+                                    placeholder="Enter note"
+                                    value={item.note}         
+                                />
+                            </td>
+
+
+                            <td>               
+                                <input 
+                                    onChange={handleChange}
+                                    type="date"
+                                    name="date"
+                                    value={item.date}
+                                    min="2018-01-01"    //Earliest selectable date
+                                    max={todayDate} //Prevents selecting future dates
+                                />  
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {/* Show error message  */}
+                                {error && (<p style={{color: "red", marginBottom: "10px"}} > {error} </p>)}
+                                
+                                <button type="submit" > Submit </button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
             </form>
 
+            {/* //To visualise list 
+            let users = [
+                {id: 1, user_id: 1, amount:400, type_transaction:"expense", category:"transportation",date_transaction:"2025-10-11", note:"makeup items"},
+                {id: 2, user_id: 2, amount:300, type_transaction:"income", category:"income",date_transaction:"2025-10-15", note:"Salary"},
+
+            ]; 
+            users.map((user)=>{
+                user.amount
+                })
+
+                key={contact.id}
+            
+            */}
+
+            
+
+
+
+    
         </div>
 
         </>
