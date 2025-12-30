@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import FormInput from "./FormInput";
 
 
 
@@ -131,52 +132,51 @@ function Item(){
                 </tbody>
 
             </table>
+         {/* //To visualise list 
+        let users = [
+            {id: 1, user_id: 1, amount:400, type_transaction:"expense", category:"transportation",date_transaction:"2025-10-11", note:"makeup items"},
+            {id: 2, user_id: 2, amount:300, type_transaction:"income", category:"income",date_transaction:"2025-10-15", note:"Salary"},
+
+        ]; 
+        users.map((user)=>{
+            user.amount
+            })
+        
+        */}
 
             <form onSubmit={handleSubmit} >
-                <div>
-                    {/* Description  */}
-                    <label>Description</label>
-                    <input 
-                    onChange={handleChange}
+                <FormInput
+                    title="Description"
+                    handleChange={handleChange}
                     type="text"
-                    name="description" 
+                    name="description"
                     placeholder="Enter description"
-                    value={item.description}/>
-                </div>
-
-                <div>
-                    {/* Category  */}
-                    <label>Category</label>
-                    <input 
-                    onChange={handleChange}
+                    value={item.description}         
+                />
+                <FormInput
+                    title="Category"
+                    handleChange={handleChange}
                     type="text"
-                    name="category" 
+                    name="category"
                     placeholder="Enter category"
-                    value={item.category}/>
-                </div>
-
-                <div>
-                    {/* Amount  */}
-                    <label>Amount</label>
-                    <input 
-                    onChange={handleChange}
+                    value={item.category}         
+                />
+                <FormInput
+                    title="Amount"
+                    handleChange={handleChange}
                     type="number"
-                    name="amount" 
-                    placeholder="Enter amount"
-                    value={item.amount}/>
-                </div>
-      
-                <div> 
-                    {/* Notes  */}
-                    <label>Note</label>
-                    <input 
-                    onChange={handleChange}
+                    name="amount"
+                    placeholder="Enter number"
+                    value={item.amount}         
+                />
+                <FormInput
+                    title="Note"
+                    handleChange={handleChange}
                     type="text"
-                    name="note" 
+                    name="note"
                     placeholder="Enter note"
-                    value={item.note}/>       
-                </div>
-
+                    value={item.note}         
+                />
                 <div> 
                     {/* Date  */}
                     <label>Date</label>
