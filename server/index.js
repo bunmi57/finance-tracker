@@ -9,6 +9,25 @@ const app = express();
 const port = 3000;
 const saltRounds = 10;
 
+/*
+    Full-Stack Mental Cheat Sheet
+    Backend
+    Receives requests
+    Validates data
+    Talks to database
+    MUST send a response
+
+    Rules
+    Frontend & backend do NOT share memory
+    Every request MUST get a response
+    Data fetching belongs in useEffect
+    UI updates when state updates
+
+    Flow
+    React → Axios → Express → DB
+    DB → Express → Axios → React state → UI
+ */
+
 // allow all origins
 app.use(cors()); 
 
@@ -57,6 +76,11 @@ app.get("/", async (req,res) =>{
     res.send("Server is running!");
 });
 
+//test grid
+app.get("/testgrid", async (req,res) =>{
+    res.send("Test grid here!");
+});
+
 /*
     Dashboard route - to show transactions after user logs in
 
@@ -66,7 +90,7 @@ app.get("/", async (req,res) =>{
     - pass over data to frontend res.render("index.ejs",{ //remember, ejs is not used but the idea is to render the data extracted from the database
         countries:countries
         total: countries.length,
-        coloor:currentUser.color. to use can call a function getCurrentUser
+        color:currentUser.color. to use can call a function getCurrentUser
     }) 
     - async function getCurrentUser(){
         const result = await db.query("SELECT * FROM users");
@@ -94,7 +118,7 @@ app.get("/", async (req,res) =>{
             if success, send success message 
 */
 
-// Register route 
+//POST Register route 
 app.post("/register", async (req,res) => {
     //Get the user email and password from input form 
     const email = req.body.username;
@@ -137,6 +161,61 @@ app.post("/login", (req,res) => {
     res.send("You are logged in!");
 });
 
+
+
+//Implement GET/transactions
+/*
+    - Get the user id
+    - filter transactions by user id 
+    - return only the user's transactions 
+*/
+
+// GET Expense route - to fetch expenses
+app.get("/expense", async (req,res) => {
+    console.log("🔥 GET /expense HIT");
+    try{
+
+        //For testing, define the user's email manually 
+        //Later, this should be obtained from the authenticated session
+        const email = process.env.TEST_EMAIL;
+        console.log("email: ", email);
+
+        //Query the database to get the user ID associated with the email
+        const result = await db.query("SELECT id FROM users WHERE email = $1 ",[email]);
+        // console.log("Expense route testing");
+        // console.log(result);
+
+        //No need to check if user exist, as expense page will only be revealed after the user logs in
+        //get the user ID 
+        // const user_id = result.rows[0].id;
+        const user_id = 1;
+        console.log("User id: ",user_id);
+
+        //Filter trnsactions by user id 
+        const user_transaction = await db.query("SELECT * FROM transactions WHERE user_id = $1 ", [user_id]);
+        const expenses = user_transaction.rows; //js object with id, user_id
+        console.log(user_transaction.rows);
+
+
+        const user_expenses = []
+
+        //Send a response 
+        return res.status(200).json({
+            message:"GET expense route works",
+            user_expenses:expenses
+        });
+
+    }catch (err){
+        console.log(err);
+        return res.status(500).json({
+            message:"Server error"
+        });
+    }
+
+});
+
+
+
 /*
     Expense route
 
@@ -149,7 +228,7 @@ app.post("/login", (req,res) => {
     - link create/add button in frontend to add info to transaction table 
 
 */
-//Expense route - to handle creating a new expense
+// POST Expense route - to handle creating a new expense
 app.post("/expense", async (req,res) => {
 
     //Extract expense details from the request body 
@@ -235,30 +314,6 @@ app.post("/expense", async (req,res) => {
 
 });
 
-//Implement GET/transactions
-/*
-    - Get the user id
-    - filter transactions by user id 
-    - return only the user's transactions 
-*/
-
-app.get("/expense", async (req,res) => {
-
-    try{
-
-        //For testing, define the user's email maually 
-        //Later, this should be obtained from the aunthenticated session
-        const email = process.env.TEST_EMAIL;
-
-        //Query the database to get the user ID associated with the email
-        const result = await db.query("SELECT id FROM users WHERE email = $1 ",[email]);
-        console.log(result);
-
-    }catch (err){
-        console.log(err)
-    }
-
-});
 
 //Start server
 app.listen(port, () =>{
