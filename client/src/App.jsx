@@ -8,6 +8,7 @@ import Login from './Pages/Login';
 import Register from './Pages/Register';
 import Expense from './Pages/Expense';
 import Savings from './Pages/Savings';
+import Testgrid from './Pages/Testgrid';
 
 function App() {
   
@@ -22,6 +23,8 @@ function App() {
           <Route path="/register" element={<Register />}/>
           <Route path="/expense" element={<Expense />}/>
           <Route path="/savings" element={<Savings />}/>
+          <Route path="/testgrid" element={<Testgrid />}/>
+
 
         </Routes>
       </Router>

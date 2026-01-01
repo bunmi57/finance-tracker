@@ -115,6 +115,21 @@ body {
   text-align: left;
 }
 
+/* Test grid styling */
+.testgrid{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+
+}
+
+.testgrid .five{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr ;
+}
+
+
 
 /* *{
   background-color: white;

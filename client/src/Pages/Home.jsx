@@ -31,6 +31,10 @@ function Home(){
            <Link to="/savings"> Savings </Link>
         </div>
 
+        <div>
+           <Link to="/testgrid"> Testgrid </Link>
+        </div>
+
         </div>
     );
 }

@@ -1,9 +1,27 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import FormInput from "./FormInput";
+import transactions from "../transactions"; //for testing 
 
+/*
+    Full-Stack Mental Cheat Sheet 
+    Frontend
+    useState → stores data for UI
+    useEffect → runs code on page load / changes
+    axios → talks to backend
+    navigate → changes pages (frontend only)
 
+    Rules
+    Frontend & backend do NOT share memory
+    Every request MUST get a response
+    Data fetching belongs in useEffect
+    UI updates when state updates
+
+    Flow
+    React → Axios → Express → DB
+    DB → Express → Axios → React state → UI
+*/
 
 function Item(){
     //React route to navigate between pages
@@ -25,9 +43,50 @@ function Item(){
         note: ""
     });
 
+    //Create state to store expenses
+    const [expenses, setExpenses] = useState([]);
+
     //Error state, stores backend validation or server error messages
     const [error, setError] = useState("");
 
+    /*
+        Timeline of what happens
+        React renders Item component
+        Component appears on screen
+        useEffect runs
+        fetchExpenses() is called
+        GET request sent to backend
+        Backend responds
+        Data logged (or stored in state)
+     */
+    //Trigger GET request when the component first loads
+    useEffect(() => {
+
+        //Async function to fetch expenses from the backend
+        const fetchExpenses = async() => {
+        try{
+            //Send GET request to /expense endpoint 
+            const response = await api.get("/expense");
+            //Log the data returned from the backend
+            console.log("here");
+            // console.log(response.data.user_expenses);
+            //Get all expenses of user including id,category, amount,date and time in json
+            const userExpenses = response.data.user_expenses; 
+            console.log(userExpenses);
+
+            //Update the expense state with expense data obtained from the database
+            setExpenses(userExpenses);
+        }catch(err){
+            //Log any network or server errors
+            console.error(err);
+        }
+        };
+
+        //Call the function to fetch expenses
+        fetchExpenses();
+
+        //Empty dependency array [] means this runs once 
+    }, []);
 
     //Handles form submission and sends expense data to the backend
     async function handleSubmit(event){
@@ -89,7 +148,26 @@ function Item(){
         });
     }
 
+    function createExpense(expenseItem){
+        return(
+            <FormInput
+                key={expenseItem.id}
+                handleChange={handleChange}       // Updates state when user types
+                type={expenseItem.type_transaction}               // Text input
+                name="description"               // Matches item.description in state
+                placeholder="Enter description"  // Hint text inside input
+                value={item.description} 
+            />
 
+        )
+
+    }
+
+    /* 
+        TODO
+       -  Display data of user from database into table using map
+       -  Display new entries in table(frontend) when user clicks submit 
+     */
 
     return (
         <>
@@ -98,11 +176,8 @@ function Item(){
             
             <h1>Expense</h1>
 
-            {/* 
-            Enter data to table 
-            Display data in database
-            Add new entries to table when user clicks + */}
-        
+
+            {/* Table to show expense transaction */}
             <form onSubmit={handleSubmit}>
                 <table>
                     {/* Table heading */}
@@ -118,20 +193,18 @@ function Item(){
 
                     <tbody>
                         {/* rows will go here */}
-                        <tr>
-                            <td>Rent</td>
-                            <td>Housing</td>
-                            <td>1000</td>
-                            <td> January rent</td>
-                            <td>2025-01-01</td>
-                        </tr>
-                        <tr>
-                            <td>Uber</td>
-                            <td>Transportation</td>
-                            <td>50</td>
-                            <td> Uber fee</td>
-                            <td>2025-02-15</td>
-                        </tr>
+                        {/* loop through trnsaction array and render each expense
+                        as a table row with its details displayed in individual columns */}
+                        
+                        {expenses.map(expense =>
+                            <tr>
+                                <td>{expense.description}</td>
+                                <td>{expense.category}</td>
+                                <td>{expense.amount}</td>
+                                <td>{expense.note}</td>
+                                <td>{expense.date_transaction}</td>
+                            </tr>
+                        )}
 
                         <tr>
                             <td>               
