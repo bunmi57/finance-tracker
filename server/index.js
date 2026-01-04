@@ -187,8 +187,7 @@ app.get("/expense", async (req,res) => {
 
         //No need to check if user exist, as expense page will only be revealed after the user logs in
         //get the user ID 
-        // const user_id = result.rows[0].id;
-        const user_id = 1;
+        const user_id = result.rows[0].id;
         console.log("User id: ",user_id);
 
         //Filter trnsactions by user id 
@@ -202,6 +201,7 @@ app.get("/expense", async (req,res) => {
         //Send a response 
         return res.status(200).json({
             message:"GET expense route works",
+            //send all the expenses of the user 
             user_expenses:expenses
         });
 
@@ -270,6 +270,7 @@ app.post("/expense", async (req,res) => {
     //Use parseFloat to return the first floating-point number found within a string "3.14" becomes 3.14
     const amountValue = parseFloat(amount);
 
+    //Handle amounts less than 0 entered in input form
     if (amountValue <= 0) {
     return res.status(400).json({
         message: "Amount must be greater than zero"
