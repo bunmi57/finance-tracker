@@ -3,7 +3,8 @@ import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import FormInput from "./FormInput";
 import transactions from "../transactions"; //for testing 
-
+import Test from "./Test";
+/**************************************** Full-Stack Mental Cheat Sheet  ********************************************************** */
 /*
     Full-Stack Mental Cheat Sheet 
     Frontend
@@ -23,8 +24,9 @@ import transactions from "../transactions"; //for testing
     DB → Express → Axios → React state → UI
 */
 
+/**************************************** Function Item (component) ********************************************************** */
 function Item(){
-    //React route to navigate between pages
+    //React router hook used to change pages(routes)
     const navigate = useNavigate();
 
     //Get today's date 
@@ -49,6 +51,8 @@ function Item(){
     //Error state, stores backend validation or server error messages
     const [error, setError] = useState("");
 
+    /**************************************** Time line of what happens ********************************************************** */
+
     /*
         Timeline of what happens
         React renders Item component
@@ -59,6 +63,9 @@ function Item(){
         Backend responds
         Data logged (or stored in state)
      */
+
+    /**************************************** useEffect: fetch data on initial render ********************************************************** */
+
     //Trigger GET request when the component first loads
     useEffect(() => {
 
@@ -88,6 +95,8 @@ function Item(){
         //Empty dependency array [] means this runs once 
     }, []);
 
+    /**************************************** Handle submit for when submit is clicked ********************************************************** */
+
     //Handles form submission and sends expense data to the backend
     async function handleSubmit(event){
         //prevents the default browser form submission(page reload)
@@ -102,9 +111,12 @@ function Item(){
                 date:item.date,
                 note: item.note
             });
+            console.log("res: ",res);
+            console.log("res.data: ", res.data);
+            console.log("res.data.expense: ", res.data.expense);
 
-            //Log successful response
-            // console.log(res.data);
+            //Immediately update table
+            setExpenses(prev => [...prev, res.data.expense]);
 
             //Reset form fields after sucessful submission
             setItem({      
@@ -114,6 +126,9 @@ function Item(){
                 date:"",
                 note: ""
             });
+
+            //Reset Error
+            setError("");
 
         }catch(err){ 
             //If backend returns 404, user does not exist, redirect to register page
@@ -134,6 +149,8 @@ function Item(){
 
     }
 
+    /**************************************** Handle change for input entry ********************************************************** */
+
     //updates state as the user types into the form inputs
     function handleChange(event){
         setError("");
@@ -148,26 +165,19 @@ function Item(){
         });
     }
 
-    function createExpense(expenseItem){
-        return(
-            <FormInput
-                key={expenseItem.id}
-                handleChange={handleChange}       // Updates state when user types
-                type={expenseItem.type_transaction}               // Text input
-                name="description"               // Matches item.description in state
-                placeholder="Enter description"  // Hint text inside input
-                value={item.description} 
-            />
-
-        )
-
-    }
+    /**************************************** TODO Reminder ********************************************************** */
 
     /* 
         TODO
-       -  Display data of user from database into table using map
-       -  Display new entries in table(frontend) when user clicks submit 
+       -  Handle no date input 
      */
+
+    /**************************************** What to return on screen  ********************************************************** */
+    /*
+    Rendering rule:
+    This component re-renders whenever state (expenses, item, error) changes.
+    JSX below is re-evaluated on every re-render.
+    */
 
     return (
         <>
@@ -192,12 +202,19 @@ function Item(){
                     </thead>
 
                     <tbody>
-                        {/* rows will go here */}
-                        {/* loop through trnsaction array and render each expense
-                        as a table row with its details displayed in individual columns */}
+
+                        {/*  
+              
+                        Render existing expense entries
+                        We loop over the "expenses" state array and render one table row by expenses
+                        When "setExpenses" is called (e.g after submitting a new expense,
+                        React re-renders this component, re-evaluates this JSX
+                        and the new expense automatically appears in the table
                         
+                        */}
+                         
                         {expenses.map(expense =>
-                            <tr>
+                            <tr key={expense.id}>
                                 <td>{expense.description}</td>
                                 <td>{expense.category}</td>
                                 <td>{expense.amount}</td>
@@ -206,6 +223,8 @@ function Item(){
                             </tr>
                         )}
 
+
+                        {/* Add forms for new expense to be entered */}
                         <tr>
                             <td>               
                                 <FormInput
@@ -263,6 +282,8 @@ function Item(){
                                 />  
                             </td>
                         </tr>
+
+                        {/* error handling */}
                         <tr>
                             <td>
                                 {/* Show error message  */}
@@ -276,24 +297,6 @@ function Item(){
 
                 </table>
             </form>
-
-            {/* //To visualise list 
-            let users = [
-                {id: 1, user_id: 1, amount:400, type_transaction:"expense", category:"transportation",date_transaction:"2025-10-11", note:"makeup items"},
-                {id: 2, user_id: 2, amount:300, type_transaction:"income", category:"income",date_transaction:"2025-10-15", note:"Salary"},
-
-            ]; 
-            users.map((user)=>{
-                user.amount
-                })
-
-                key={contact.id}
-            
-            */}
-
-            
-
-
 
     
         </div>
