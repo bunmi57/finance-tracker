@@ -4,6 +4,11 @@ import { useNavigate } from "react-router-dom";
 import FormInput from "./FormInput";
 import transactions from "../transactions"; //for testing 
 import Test from "./Test";
+/* React Material UI */
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DoneIcon from '@mui/icons-material/Done';
+
 /**************************************** Full-Stack Mental Cheat Sheet  ********************************************************** */
 /*
     Full-Stack Mental Cheat Sheet 
@@ -44,6 +49,11 @@ function Item(){
         date:"",
         note: ""
     });
+
+    //state to track whether the expense item is currently in edit mode 
+    //false -> show Edit button 
+    //true  ->  hide Edit button and allow editing 
+    const [editingId, setEditingId] = useState(null);
 
     //Create state to store expenses
     const [expenses, setExpenses] = useState([]);
@@ -114,9 +124,12 @@ function Item(){
             console.log("res: ",res);
             console.log("res.data: ", res.data);
             console.log("res.data.expense: ", res.data.expense);
-
-            //Immediately update table
-            setExpenses(prev => [...prev, res.data.expense]);
+                        
+            //Update the expense state with expense data inserted into the database, as "expenses" state changes the JSX is rerendered
+            setExpenses(prev => [
+                ...prev, 
+                res.data.expense
+            ]);
 
             //Reset form fields after sucessful submission
             setItem({      
@@ -152,19 +165,19 @@ function Item(){
     /**************************************** Handle change for input entry ********************************************************** */
 
     //updates state as the user types into the form inputs
-    function handleChange(event){
+    function handleChange(event, id){
         setError("");
         const {name, value} = event.target;
 
-        //preserve existing state while updating the changed field
-        setItem(prevValue => {
-            return{
-                ...prevValue,
-                [name]:value
-            };
-        });
+        // Update the specific expense in the array
+        setExpenses(prevExpenses =>
+            prevExpenses.map(exp =>
+                exp.id === id
+                    ? { ...exp, [name]: value } // update only the changed field
+                    : exp
+            )
+        );
     }
-
     /**************************************** TODO Reminder ********************************************************** */
 
     /* 
@@ -178,6 +191,18 @@ function Item(){
     This component re-renders whenever state (expenses, item, error) changes.
     JSX below is re-evaluated on every re-render.
     */
+
+    function handleEdit(id){
+        //when the edit button is clicked, set isEditing to true to hide the Edit button
+        setEditingId(id);
+        console.log("Edit button clicked")
+    }
+    function handleDelete(){
+        console.log("Delete button clicked")
+    }
+    function handleDone(){
+        setEditingId(null); //exit edit mode
+    }
 
     return (
         <>
@@ -193,11 +218,13 @@ function Item(){
                     {/* Table heading */}
                     <thead>
                         <tr>
+                            <th>For testing only</th>
                             <th>Description</th>
                             <th>Category</th>
                             <th>Amount</th>
                             <th>Note</th>
                             <th>Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
 
@@ -215,11 +242,113 @@ function Item(){
                          
                         {expenses.map(expense =>
                             <tr key={expense.id}>
-                                <td>{expense.description}</td>
-                                <td>{expense.category}</td>
-                                <td>{expense.amount}</td>
-                                <td>{expense.note}</td>
-                                <td>{expense.date_transaction}</td>
+                                {/* for test only */}
+                                <td>{expense.id}</td> 
+                                {/* 
+                                editingId - the id of the line being edit (when edit button has been clicked)
+                                expense.id - current Id
+                                When the editingId is not equal to the current id show the expense.descriptiom
+                                When the editingId is equal to the current id show the input form 
+                                if Edit button is clicked, change this to an input form but retain the current value  */}
+
+                                <td>
+                                    {editingId !== expense.id 
+                                        ? expense.description  //normal text when not editing 
+                                        : <FormInput
+                                            title="Description"              // Label shown above the input
+                                            handleChange={(e) => handleChange(e, expense.id)}  // pass the id       // Updates state when user types
+                                            type="text"                      // Text input
+                                            name="description"               // Matches item.description in state
+                                            placeholder="Enter description"  // Hint text inside input
+                                            value={expense.description}         // Controlled input value        
+                                       />
+                                   } 
+                                </td>
+                                
+                                <td>
+                                    {editingId !== expense.id 
+                                        ? expense.category  //normal text when not editing 
+                                        : <FormInput
+                                            title="Category"
+                                            handleChange={(e) => handleChange(e, expense.id)}  // pass the id  
+                                            type="text"
+                                            name="category"
+                                            placeholder="Enter category"
+                                            value={expense.category}         
+                                        />
+                                   } 
+                                </td>
+
+                                <td>    
+                                    {editingId !== expense.id 
+                                        ? expense.amount  //normal text when not editing 
+                                        : <FormInput
+                                            title="Amount"
+                                            handleChange={(e) => handleChange(e, expense.id)}  // pass the id  
+                                            type="number"
+                                            name="amount"
+                                            placeholder="Enter number"
+                                            value={expense.amount}         
+                                        />
+                                   } 
+                                </td>
+                                
+                                <td>
+                                    {editingId !== expense.id 
+                                        ? expense.note  //normal text when not editing 
+                                        : <FormInput
+                                            title="Note"
+                                            handleChange={(e) => handleChange(e, expense.id)}  // pass the id  
+                                            type="text"
+                                            name="note"
+                                            placeholder="Enter note"
+                                            value={expense.note}         
+                                        />
+                                   } 
+
+                                </td>
+                                <td>
+                                    {editingId !== expense.id 
+                                        ? expense.date_transaction //normal text when not editing 
+                                        :  <input 
+                                                onChange={(e) => handleChange(e, expense.id)}                                      
+                                                type="date"
+                                                name="date_transaction"
+                                                value={expense.date_transaction}
+                                                min="2018-01-01"    //Earliest selectable date
+                                                max={todayDate} //Prevents selecting future dates
+                                            />  
+                                    } 
+                                </td>
+                                <td>
+                                    <div>
+                                        {/* Show Edit button only if this row is NOT being edited
+                                         render the editing button only if editingID is not equal to current id */}
+                                      
+                                        {(editingId !== expense.id) && ( 
+                                                <button 
+                                                    type="button" 
+                                                    name="edit" 
+                                                    onClick={() => handleEdit(expense.id)} 
+                                                    > 
+                                                    
+                                                    <EditIcon/> 
+                                                </button>
+                                        )}
+                                        {/* Show Done button only if this row IS being edited
+                                          show the Done button only when editing button is clicked */}
+                                        {(editingId === expense.id) &&(
+                                                <button 
+                                                    type="button" 
+                                                    name="done" 
+                                                    onClick={handleDone} //exit edit mode
+                                                    > 
+                                                    <DoneIcon/>
+                                                </button>
+                                        )}
+                                      <button type="button" name="delete" onClick={handleDelete} value={expense.id} > <DeleteIcon/> </button>
+                                    </div>                             
+                                </td>
                             </tr>
                         )}
 
@@ -281,6 +410,8 @@ function Item(){
                                     max={todayDate} //Prevents selecting future dates
                                 />  
                             </td>
+
+
                         </tr>
 
                         {/* error handling */}
