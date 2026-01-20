@@ -217,7 +217,7 @@ app.get("/expense", async (req,res) => {
 
 
 /*
-    Expense route
+    POST Expense route
 
     Create route for new transaction for specific user (implement POST /transactions)
     - Use email logged in to get id of user - done
@@ -312,6 +312,41 @@ app.post("/expense", async (req,res) => {
         }
         return res.status(500).json({ message: "Server error" });
     }
+
+});
+
+/* UPDATE Route 
+    - Ensure transaction belong to the user
+    - Get the id of the item being updated
+    - Get the edited value 
+    - update the row in the database
+    - update the expense state. (automatically renders)
+
+
+    click on edit - complete
+    hide edit button - complete 
+    show done button - complete 
+    change all cells to input form - complete 
+    allow user to change data - complete 
+    when user clicks done, show edit button - complete 
+    send request to backend to UPDATE the database 
+    rerender to show the new data  
+    
+     */
+//PUT route to update expense of a user
+app.put('/expense/:id',(req,res) => {
+    //Get the expense id from the URL
+    const expenseId = req.params.id; 
+
+    //Log for testing
+    console.log("Expense id: ",expenseId );
+    
+    //Extract updated expense details from the request body 
+    const updatedDescription = req.body.description;
+    const updtedCategory = req.body.category;
+    const updatedAmount = req.body.amount;
+    const updatedDate = req.body.date;
+    const updatedNote = req.body.note;
 
 });
 
