@@ -61,6 +61,17 @@ function Item(){
     //Error state, stores backend validation or server error messages
     const [error, setError] = useState("");
 
+    function formatDateForInput(date) {
+        if (!date) return "";
+
+        const d = new Date(date);
+        if (isNaN(d)) return "";
+
+        return d.toISOString().split("T")[0];
+
+    }
+
+
     /**************************************** Time line of what happens ********************************************************** */
 
     /*
@@ -200,8 +211,40 @@ function Item(){
     function handleDelete(){
         console.log("Delete button clicked")
     }
-    function handleDone(){
-        setEditingId(null); //exit edit mode
+
+    //Handles Done submission for Update and sends expense data to the backend
+    async function handleDone(event, id){
+        //exit edit mode
+        setEditingId(null); 
+
+        //Log for testing
+        console.log("Id clicked: ", id);
+
+        //prevents the default browser form submission(page reload)
+        event.preventDefault();
+
+        //Send updated data to the backend API
+        // try{
+        //     const res = await api.put("/expense/:id", {
+        //         description: item.description,
+        //         category: item.category,
+        //         amount: item.amount,
+        //         date:item.date,
+        //         note: item.note
+        //     });
+
+        // }catch(err){ 
+        //     //If backend returns 404
+        //     if (err.response?.status === 404){
+        //         console.log("Error 404")
+        //     }else{
+        //         //Log any unexpected or server-related errors
+        //         console.log(err);
+        //         setError("Something went wrong.Please try again.")
+        //     }
+
+        // }
+
     }
 
     return (
@@ -314,7 +357,7 @@ function Item(){
                                                 onChange={(e) => handleChange(e, expense.id)}                                      
                                                 type="date"
                                                 name="date_transaction"
-                                                value={expense.date_transaction}
+                                                value={formatDateForInput(expense.date_transaction)} //formatDateForInput is a function
                                                 min="2018-01-01"    //Earliest selectable date
                                                 max={todayDate} //Prevents selecting future dates
                                             />  
@@ -341,7 +384,7 @@ function Item(){
                                                 <button 
                                                     type="button" 
                                                     name="done" 
-                                                    onClick={handleDone} //exit edit mode
+                                                    onClick={(e)=> handleDone(e, expense.id)} //exit edit mode
                                                     > 
                                                     <DoneIcon/>
                                                 </button>
