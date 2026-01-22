@@ -132,7 +132,7 @@ app.post("/register", async (req,res) => {
         // console.log(findUser);
 
         if (findUser.rows.length > 0){ //user exists, send user to login page 
-            console.log("User exists, log in");
+            // console.log("User exists, log in");
             res.send("You are logged in ");
         }else { // If No(user does not exist), ask user to register
             bcrypt.hash(password,saltRounds, async(err,hash) => {
@@ -172,13 +172,13 @@ app.post("/login", (req,res) => {
 
 // GET Expense route - to fetch expenses
 app.get("/expense", async (req,res) => {
-    console.log("🔥 GET /expense HIT");
+    // console.log("🔥 GET /expense HIT");
     try{
 
         //For testing, define the user's email manually 
         //Later, this should be obtained from the authenticated session
         const email = process.env.TEST_EMAIL;
-        console.log("email: ", email);
+        // console.log("email: ", email);
 
         //Query the database to get the user ID associated with the email
         const result = await db.query("SELECT id FROM users WHERE email = $1 ",[email]);
@@ -188,12 +188,12 @@ app.get("/expense", async (req,res) => {
         //No need to check if user exist, as expense page will only be revealed after the user logs in
         //get the user ID 
         const user_id = result.rows[0].id;
-        console.log("User id: ",user_id);
+        // console.log("User id: ",user_id);
 
         //Filter trnsactions by user id 
         const user_transaction = await db.query("SELECT * FROM transactions WHERE user_id = $1 ", [user_id]);
         const expenses = user_transaction.rows; //js object with id, user_id
-        console.log(user_transaction.rows);
+        // console.log(user_transaction.rows);
 
 
         const user_expenses = []
@@ -334,19 +334,49 @@ app.post("/expense", async (req,res) => {
     
      */
 //PUT route to update expense of a user
-app.put('/expense/:id',(req,res) => {
-    //Get the expense id from the URL
+app.put('/expense/:id',async (req,res) => {
+    //Get the expense id that is being updated  from the URL
     const expenseId = req.params.id; 
 
     //Log for testing
     console.log("Expense id: ",expenseId );
     
+
     //Extract updated expense details from the request body 
     const updatedDescription = req.body.description;
     const updtedCategory = req.body.category;
     const updatedAmount = req.body.amount;
     const updatedDate = req.body.date;
     const updatedNote = req.body.note;
+
+    console.log("Updated Description: ", updatedDescription);
+    console.log("Updated Category: ", updtedCategory);
+    console.log("Updated Amount: ", updatedAmount);
+    console.log("Updated Date: ", updatedDate);
+    console.log("Updated Note: ", updatedNote);
+
+    const type_transaction = "expense";
+    try{
+        //Update the transactions table with the updated data 
+        const update = await db.query("UPDATE transactions SET type_transaction = $1, description = $2, category = $3, amount = $4, note = $5,date_transaction = $6 WHERE id =  $7",
+            [type_transaction,updatedDescription,updtedCategory,updatedAmount, updatedNote, updatedDate, expenseId]
+        );
+
+        return res.status(201).json({
+            message: "Expense updated successfully",
+            updateResult: update,
+        });
+
+    }catch (err){
+            //Log any database errors for debugging
+            console.error(err);
+
+            //catch  post-gres specific error 
+            return res.status(500).json({ message: "Server error" });
+
+    }
+
+    console.log(update);
 
 });
 
