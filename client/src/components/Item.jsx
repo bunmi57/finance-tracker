@@ -213,7 +213,7 @@ function Item(){
     }
 
     //Handles Done submission for Update and sends expense data to the backend
-    async function handleDone(event, id){
+    async function handleDone(event, id, description,category,amount,note,date_transaction){
         //exit edit mode
         setEditingId(null); 
 
@@ -223,27 +223,27 @@ function Item(){
         //prevents the default browser form submission(page reload)
         event.preventDefault();
 
-        //Send updated data to the backend API
-        // try{
-        //     const res = await api.put("/expense/:id", {
-        //         description: item.description,
-        //         category: item.category,
-        //         amount: item.amount,
-        //         date:item.date,
-        //         note: item.note
-        //     });
+        // Send updated data to the backend API
+        try{
+            const res = await api.put(`/expense/${id}`, {
+                description: description,
+                category: category,
+                amount: amount,
+                note: note,
+                date: date_transaction
+            });
+            console.log("Update success:", res);
+        }catch(err){ 
+            //If backend returns 404
+            if (err.response?.status === 404){
+                console.log("Error 404")
+            }else{
+                //Log any unexpected or server-related errors
+                console.log(err);
+                setError("Something went wrong.Please try again.")
+            }
 
-        // }catch(err){ 
-        //     //If backend returns 404
-        //     if (err.response?.status === 404){
-        //         console.log("Error 404")
-        //     }else{
-        //         //Log any unexpected or server-related errors
-        //         console.log(err);
-        //         setError("Something went wrong.Please try again.")
-        //     }
-
-        // }
+        }
 
     }
 
@@ -313,7 +313,7 @@ function Item(){
                                         ? expense.category  //normal text when not editing 
                                         : <FormInput
                                             title="Category"
-                                            handleChange={(e) => handleChange(e, expense.id)}  // pass the id  
+                                            handleChange={(e) => handleChange(e, expense.id, expense.description)}  // pass the id  
                                             type="text"
                                             name="category"
                                             placeholder="Enter category"
@@ -384,7 +384,15 @@ function Item(){
                                                 <button 
                                                     type="button" 
                                                     name="done" 
-                                                    onClick={(e)=> handleDone(e, expense.id)} //exit edit mode
+                                                    onClick={(e)=> handleDone(e, 
+                                                        expense.id, 
+                                                        expense.description,
+                                                        expense.category,
+                                                        expense.amount,
+                                                        expense.note,
+                                                        expense.date_transaction
+
+                                                    )} //exit edit mode
                                                     > 
                                                     <DoneIcon/>
                                                 </button>
