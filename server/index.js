@@ -4,6 +4,7 @@ import pg from "pg";
 import bcrypt from "bcrypt";
 import env from "dotenv";
 import cors from "cors";
+// import transactions from "../client/src/transactions";
 
 const app = express();
 const port = 3000;
@@ -329,7 +330,7 @@ app.post("/expense", async (req,res) => {
     change all cells to input form - complete 
     allow user to change data - complete 
     when user clicks done, show edit button - complete 
-    send request to backend to UPDATE the database 
+    send request to backend to UPDATE the database - complete
     rerender to show the new data  
     
      */
@@ -344,7 +345,7 @@ app.put('/expense/:id',async (req,res) => {
 
     //Extract updated expense details from the request body 
     const updatedDescription = req.body.description;
-    const updtedCategory = req.body.category;
+    const updatedCategory = req.body.category;
     const updatedAmount = req.body.amount;
     const updatedDate = req.body.date;
     const updatedNote = req.body.note;
@@ -358,10 +359,12 @@ app.put('/expense/:id',async (req,res) => {
     const type_transaction = "expense";
     try{
         //Update the transactions table with the updated data 
-        const update = await db.query("UPDATE transactions SET type_transaction = $1, description = $2, category = $3, amount = $4, note = $5,date_transaction = $6 WHERE id =  $7",
-            [type_transaction,updatedDescription,updtedCategory,updatedAmount, updatedNote, updatedDate, expenseId]
+        const update = await db.query("UPDATE transactions SET type_transaction = $1, description = $2, category = $3, amount = $4, note = $5,date_transaction = $6 WHERE id =  $7 RETURNING *",
+            [type_transaction,updatedDescription,updatedCategory,updatedAmount, updatedNote, updatedDate, expenseId] 
         );
+        console.log("update: ", update.rows[0])
 
+        //send back status message 
         return res.status(201).json({
             message: "Expense updated successfully",
             updateResult: update,
@@ -378,6 +381,46 @@ app.put('/expense/:id',async (req,res) => {
 
     console.log(update);
 
+});
+/* DELETE Route 
+    - Ensure transaction belong to the user
+    - Get the id of the item being deleted
+    - delete the row in the database
+    - should update the expense state. (automatically renders)
+
+
+    click on delete - 
+    hide delete button -  
+    show undo delete button -  
+    when user clicks delete, hide delete button -  
+    send request to backend to DELETE the database - 
+    rerender  
+    
+     */
+
+app.delete('/expense/:id', async (req,res) => {
+    //Get the expense id that is being deleted from the URL
+    const deleteId = req.params.id; 
+
+    //Log for testing
+    console.log("Delete id - backend: ",deleteId );
+
+    try{
+        const deleteExpense = await db.query("DELETE FROM transactions WHERE id = $1 RETURNING *", [deleteId]);
+
+        if(deleteExpense.rowCount === 0){
+            //No rows deleted (id not found)
+            return res.status(404).json({message: "Expense not found"});
+        }
+        //send back status message 
+        return res.status(201).json({
+            message: "Deleted successfully",
+            deleteExpense: deleteExpense.rows[0]
+        });
+    }catch(err){
+        console.log("Database delete error:",err);
+        return res.status(500).json({message:"Server error"});
+    }
 });
 
 
