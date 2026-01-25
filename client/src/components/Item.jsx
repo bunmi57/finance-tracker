@@ -282,6 +282,18 @@ function Item(){
             console.log(err);
         }
     }
+
+    /**************************************** Handle new item ********************************************************** */
+
+    function handleNewItemChange(event){
+        setError("");
+        const {name, value} = event.target;
+
+        setItem(prevItem => ({
+            ...prevItem,
+            [name]:value
+        }));
+    }
     /**************************************** What to return on screen  ********************************************************** */
     /*
     Rendering rule:
@@ -449,7 +461,7 @@ function Item(){
                             <td>               
                                 <FormInput
                                     title="Description"              // Label shown above the input
-                                    handleChange={handleChange}       // Updates state when user types
+                                    handleChange={handleNewItemChange}       // Updates state when user types
                                     type="text"                      // Text input
                                     name="description"               // Matches item.description in state
                                     placeholder="Enter description"  // Hint text inside input
@@ -460,7 +472,7 @@ function Item(){
                             <td>                
                                 <FormInput
                                     title="Category"
-                                    handleChange={handleChange}
+                                    handleChange={handleNewItemChange}
                                     type="text"
                                     name="category"
                                     placeholder="Enter category"
@@ -471,7 +483,7 @@ function Item(){
                             <td>               
                                 <FormInput
                                     title="Amount"
-                                    handleChange={handleChange}
+                                    handleChange={handleNewItemChange}
                                     type="number"
                                     name="amount"
                                     placeholder="Enter number"
@@ -482,7 +494,7 @@ function Item(){
                             <td>               
                                 <FormInput
                                     title="Note"
-                                    handleChange={handleChange}
+                                    handleChange={handleNewItemChange}
                                     type="text"
                                     name="note"
                                     placeholder="Enter note"
@@ -493,7 +505,7 @@ function Item(){
 
                             <td>               
                                 <input 
-                                    onChange={handleChange}
+                                    onChange={handleNewItemChange}
                                     type="date"
                                     name="date"
                                     value={item.date}
