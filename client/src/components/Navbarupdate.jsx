@@ -6,25 +6,25 @@ function Navbarupdate(){
     return (
         <div className="container">
             <div>
-                <PaymentsIcon className="logo"/>
+                <PaymentsIcon className="logo" fontSize="large"/>
             </div>
-            <div className="brand">
+            {/* <div className="brand">
                 <p>Finance Tracker</p>
-            </div>
+            </div> */}
 
-            <div className="navitem">
+            {/* <div className="navitem">
                 <p>Budget</p>
-            </div>
+            </div> */}
 
-            <div className="navitem">
+            {/* <div className="navitem">
                 <p>Pricing</p>
-            </div>
+            </div> */}
 
             <div className="navitem login">
                 <Link className="nav-link" to="/login">Log in</Link>
             </div>
 
-            <div className="navitem">
+            <div className="navitem register">
                 <Link className="nav-link" to="/register">Register</Link>
             </div>
           

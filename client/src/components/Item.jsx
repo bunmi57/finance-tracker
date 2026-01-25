@@ -8,6 +8,7 @@ import Test from "./Test";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
+import SendIcon from '@mui/icons-material/Send';
 
 /**************************************** Full-Stack Mental Cheat Sheet  ********************************************************** */
 /*
@@ -305,16 +306,16 @@ function Item(){
             
         <div className="expense" >
             
-            <h1>Expense</h1>
+            {/* <h1>Expense</h1> */}
 
 
             {/* Table to show expense transaction */}
             <form onSubmit={handleSubmit}>
-                <table>
+                <table className="table">
                     {/* Table heading */}
-                    <thead>
+                    <thead className = "thead-light">
                         <tr>
-                            <th>For testing only</th>
+                            {/* <th>For testing only</th> */}
                             <th>Description</th>
                             <th>Category</th>
                             <th>Amount</th>
@@ -339,7 +340,9 @@ function Item(){
                         {expenses.map(expense =>
                             <tr key={expense.id}>
                                 {/* for test only */}
-                                <td>{expense.id}</td> 
+                                {/* <td>{expense.id}</td>  */}
+
+
                                 {/* 
                                 editingId - the id of the line being edit (when edit button has been clicked)
                                 expense.id - current Id
@@ -514,18 +517,18 @@ function Item(){
                                 />  
                             </td>
 
-
-                        </tr>
-
-                        {/* error handling */}
-                        <tr>
+                            {/* error handling */}
+                        
                             <td>
                                 {/* Show error message  */}
                                 {error && (<p style={{color: "red", marginBottom: "10px"}} > {error} </p>)}
                                 
-                                <button type="submit" > Submit </button>
+                                <button type="submit" > <SendIcon /> </button>
                             </td>
                         </tr>
+
+
+                       
 
                     </tbody>
 

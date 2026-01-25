@@ -1,7 +1,13 @@
 @import "tailwindcss";
 
+html {
+  font-size: 16px;
+}
 body {
   font-family: "Montserrat", sans-serif;
+}
+.home{
+  background-color: black;
 }
 
 .navbar {
@@ -42,7 +48,8 @@ body {
   margin: 0px;
   padding-top: 5px;
   /* background-color: #EBB8DD; */
-  background-color: #253342;
+  /* background-color: #253342; */
+
   font-family: "Montserrat", sans-serif;
   max-width:100%; /*spans full width*/
 }
@@ -52,6 +59,13 @@ body {
 }
 .login{
   margin-left: auto; /*pushes login bar all the way to the end */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+}
+
+.register{
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1rem;
 }
 
 .navitem{
@@ -96,25 +110,44 @@ body {
   word-wrap: break-word;
 }
 
-/* Expense styling */
-.expense {
+/* Expense styling 
+    .expense {
   display: flex;
-  flex-direction: column; /*stack items vertically */
-  gap:16px;  /* space between title and forom */
-}
+  flex-direction: column; /*stack items vertically gap: 16px */ 
 
-.expense table{
+
+/* .expense table{
   width: 80%;
   border-collapse: collapse;
-}
+} */
 
-.expense th,
+/* .expense th,
 .expense td {
   border: 1px solid red;
   padding: 8px;
   text-align: left;
+} */
+
+
+.expense {
+  margin: 60px;
 }
 
+/* Hero styling */
+.hero{
+  color: white;
+}
+
+
+.hero h1,
+.hero p{
+  color: white;
+}
+
+.hero a {
+  color: white;
+  text-decoration: none;
+}
 /* Test grid styling */
 .testgrid{
   display: grid;
