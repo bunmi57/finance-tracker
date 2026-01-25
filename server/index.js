@@ -340,7 +340,7 @@ app.put('/expense/:id',async (req,res) => {
     const expenseId = req.params.id; 
 
     //Log for testing
-    console.log("Expense id: ",expenseId );
+    // console.log("Expense id: ",expenseId );
     
 
     //Extract updated expense details from the request body 
@@ -350,11 +350,12 @@ app.put('/expense/:id',async (req,res) => {
     const updatedDate = req.body.date;
     const updatedNote = req.body.note;
 
-    console.log("Updated Description: ", updatedDescription);
-    console.log("Updated Category: ", updtedCategory);
-    console.log("Updated Amount: ", updatedAmount);
-    console.log("Updated Date: ", updatedDate);
-    console.log("Updated Note: ", updatedNote);
+    //Log for testing
+    // console.log("Updated Description: ", updatedDescription);
+    // console.log("Updated Category: ", updatedCategory);
+    // console.log("Updated Amount: ", updatedAmount);
+    // console.log("Updated Date: ", updatedDate);
+    // console.log("Updated Note: ", updatedNote);
 
     const type_transaction = "expense";
     try{
@@ -362,7 +363,7 @@ app.put('/expense/:id',async (req,res) => {
         const update = await db.query("UPDATE transactions SET type_transaction = $1, description = $2, category = $3, amount = $4, note = $5,date_transaction = $6 WHERE id =  $7 RETURNING *",
             [type_transaction,updatedDescription,updatedCategory,updatedAmount, updatedNote, updatedDate, expenseId] 
         );
-        console.log("update: ", update.rows[0])
+        // console.log("update: ", update.rows[0])
 
         //send back status message 
         return res.status(201).json({
@@ -403,7 +404,7 @@ app.delete('/expense/:id', async (req,res) => {
     const deleteId = req.params.id; 
 
     //Log for testing
-    console.log("Delete id - backend: ",deleteId );
+    // console.log("Delete id - backend: ",deleteId );
 
     try{
         const deleteExpense = await db.query("DELETE FROM transactions WHERE id = $1 RETURNING *", [deleteId]);
