@@ -193,46 +193,57 @@ function Item(){
 
     /* 
         TODO
-       -  Handle no date input 
+       -  Handle no date input
+       - Add undo delete 
      */
 
-    /**************************************** What to return on screen  ********************************************************** */
-    /*
-    Rendering rule:
-    This component re-renders whenever state (expenses, item, error) changes.
-    JSX below is re-evaluated on every re-render.
-    */
+
+    /**************************************** Handle edit ********************************************************** */
 
     function handleEdit(id){
         //when the edit button is clicked, set isEditing to true to hide the Edit button
         setEditingId(id);
         console.log("Edit button clicked")
     }
-    function handleDelete(){
-        console.log("Delete button clicked")
-    }
+
+    /**************************************** Handle done: when edit is done ********************************************************** */
 
     //Handles Done submission for Update and sends expense data to the backend
-    async function handleDone(event, id, description,category,amount,note,date_transaction){
+    async function handleDone(id){
         //exit edit mode
         setEditingId(null); 
 
         //Log for testing
         console.log("Id clicked: ", id);
 
-        //prevents the default browser form submission(page reload)
-        event.preventDefault();
+        //Get the updated expense
+        /*in the expenses array, find exp where exp is an element 
+        so find the exp.id which is equal to the passed in id
+            exp =   id:4,
+                    user_id:1,
+                    amount:4000,
+                    description:"Student loan",
+                    type_transaction:"debt",
+                    category:"personal",
+                    date_transaction:"2024-04-09",
+                    note:"final installment"
+         */
+        
+        const updatedExpense = expenses.find(exp => exp.id === id)
+        if (!updatedExpense) return;
+        console.log("Updated Expense: ", updatedExpense);
 
         // Send updated data to the backend API
         try{
             const res = await api.put(`/expense/${id}`, {
-                description: description,
-                category: category,
-                amount: amount,
-                note: note,
-                date: date_transaction
+                description: updatedExpense.description,
+                category: updatedExpense.category,
+                amount: updatedExpense.amount,
+                note: updatedExpense.note,
+                date: updatedExpense.date_transaction
             });
             console.log("Update success:", res);
+        
         }catch(err){ 
             //If backend returns 404
             if (err.response?.status === 404){
@@ -247,6 +258,36 @@ function Item(){
 
     }
 
+    /**************************************** Handle delete ********************************************************** */
+
+    async function handleDelete(id){
+        //Log for testing 
+        console.log("Delete id: ", id)
+
+        // Send id to be deleted to the backend API
+        try{
+            const res = await api.delete(`/expense/${id}`);
+
+            //Log result received from backed
+            console.log("Delete res:", res);
+            console.log("Delete res.data:", res.data);
+            
+            //update state to remove the deleted expense from "expenses" state
+            setExpenses(prevExpenses =>
+                prevExpenses.filter(exp => exp.id !== id)
+            );
+
+        }catch(err){ 
+            //Log error
+            console.log(err);
+        }
+    }
+    /**************************************** What to return on screen  ********************************************************** */
+    /*
+    Rendering rule:
+    This component re-renders whenever state (expenses, item, error) changes.
+    JSX below is re-evaluated on every re-render.
+    */
     return (
         <>
             
@@ -384,27 +425,26 @@ function Item(){
                                                 <button 
                                                     type="button" 
                                                     name="done" 
-                                                    onClick={(e)=> handleDone(e, 
-                                                        expense.id, 
-                                                        expense.description,
-                                                        expense.category,
-                                                        expense.amount,
-                                                        expense.note,
-                                                        expense.date_transaction
-
-                                                    )} //exit edit mode
+                                                    onClick={(e)=> handleDone(expense.id)} //exit edit mode
                                                     > 
                                                     <DoneIcon/>
                                                 </button>
                                         )}
-                                      <button type="button" name="delete" onClick={handleDelete} value={expense.id} > <DeleteIcon/> </button>
+                                      <button 
+                                             type="button" 
+                                             name="delete"
+                                             onClick={() => handleDelete(expense.id)} 
+                                             > 
+                                             
+                                             <DeleteIcon/> 
+                                     </button>
                                     </div>                             
                                 </td>
                             </tr>
                         )}
 
 
-                        {/* Add forms for new expense to be entered */}
+                        {/* Add input forms to enter a new expense */}
                         <tr>
                             <td>               
                                 <FormInput
