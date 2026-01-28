@@ -9,6 +9,7 @@ import Register from './Pages/Register';
 import Expense from './Pages/Expense';
 import Savings from './Pages/Savings';
 import Testgrid from './Pages/Testgrid';
+import Income from './Pages/Income';
 
 function App() {
   
@@ -24,6 +25,7 @@ function App() {
           <Route path="/expense" element={<Expense />}/>
           <Route path="/savings" element={<Savings />}/>
           <Route path="/testgrid" element={<Testgrid />}/>
+          <Route path="/income" element={<Income />}/>
 
           
         </Routes>
