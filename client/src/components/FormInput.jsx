@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Item from "./Item";
 
+// Creates an input form to enter data
 function FormInput(props){
  return(
     <>
