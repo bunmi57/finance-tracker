@@ -54,6 +54,9 @@ function Home(){
                         <button className="btn btn-outline-secondary btn-lg px-4">            
                                 <Link to="/savings"> Savings </Link>
                         </button>
+                        <button>
+                            <Link to="/income"> Income </Link>
+                        </button>
                     </div>
                 </div>
             </div>
