@@ -162,6 +162,10 @@ body {
   grid-template-rows: 1fr 1fr ;
 }
 
+/* Income page styling */
+.income{
+  margin: 60px;
+}
 
 
 /* *{
