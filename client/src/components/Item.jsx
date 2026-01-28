@@ -62,6 +62,9 @@ function Item(){
     //Error state, stores backend validation or server error messages
     const [error, setError] = useState("");
 
+    /**************************************** Format Date for input function ********************************************************** */
+
+
     function formatDateForInput(date) {
         if (!date) return "";
 
