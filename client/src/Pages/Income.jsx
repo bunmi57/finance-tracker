@@ -37,7 +37,7 @@ function Income(){
         description: "",
         source: "",
         amount: "",
-        date:"",
+        date_income:"",
     });
     
 
@@ -90,52 +90,73 @@ function Income(){
         <>
         <div className="expense">
             <table className="table">
-                <tr>
-                    <th>Description</th>
-                    <th>Source</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                </tr>
-                <tr>
-                    <td>First paycheck</td>
-                    <td>Salary</td>
-                    <td>5000</td>
-                    <td>2025-01-01</td>
-                    <td>Edit</td>
-                </tr>
-                <tr>
-                    <td>Freelance income</td>
-                    <td>Freelance</td>
-                    <td>1500</td>
-                    <td>2026-01-22</td>
-                    <td>Delete</td>
-                </tr>
+                <thead className="thead-light">
+                        <tr>
+                            <th>Description</th>
+                            <th>Source</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>First paycheck</td>
+                        <td>Salary</td>
+                        <td>5000</td>
+                        <td>2025-01-01</td>
+                        <td>Edit</td>
+                    </tr>
+                    <tr>
+                        <td>Freelance income</td>
+                        <td>Freelance</td>
+                        <td>1500</td>
+                        <td>2026-01-22</td>
+                        <td>Delete</td>
+                    </tr>
 
-                {/* Add new form  */}
-                <tr>
-                    <td>
-                        <FormInput
-                            handleChange={handleChange}
-                            type="text"
-                            name="description" 
-                            placeholder="Enter description"
-                            value = {item.description} //use value that comes from state, hence keeping a single source of truth 
-                        />
-                    </td>
-                    <td>
-                        <FormInput
-                            handleChange={handleChange}
-                            type="number"
-                            name="amount"
-                            placeholder="Enter amount"
-                            value={item.amount}
-                        />
-                    </td>
-                    <td>2026-01-22</td>
-                    <td>Delete</td>
-                </tr>             
-
+                    {/* Add new form  */}
+                    <tr>
+                        <td>
+                            <FormInput
+                                handleChange={handleChange}
+                                type="text"
+                                name="description" 
+                                placeholder="Enter description"
+                                value = {item.description} //use value that comes from state, hence keeping a single source of truth 
+                            />
+                        </td>
+                        <td>
+                            <FormInput
+                                handleChange={handleChange}
+                                type="text"
+                                name="source"
+                                placeholder="Enter source"
+                                value={item.source}
+                            />
+                        </td>
+                        <td>
+                            <FormInput
+                                handleChange={handleChange}
+                                type="number"
+                                name="amount"
+                                placeholder="Enter amount"
+                                value={item.amount}
+                            />
+                        </td>
+                        <td>
+                            <input 
+                                onChange={handleChange}                                      
+                                type="date"
+                                name="date_income"
+                                value={formatDateForInput(item.date_income)} //formatDateForInput is a function
+                                min="2018-01-01"    //Earliest selectable date
+                                max={getTodayDate()} //Prevents selecting future dates
+                            />  
+                        </td>
+                        <td>Delete</td>
+                    </tr>             
+                </tbody>
 
             </table>
         </div>
