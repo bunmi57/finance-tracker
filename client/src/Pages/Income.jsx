@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import api from "../api/axios";
 import incomes from "../incomes"; //for testing 
 import FormInput from "../components/FormInput";
 /* functions */
@@ -10,7 +11,6 @@ import SendIcon from '@mui/icons-material/Send';
 /*
 To do List
 1. create a form for a new entry 
-2. Create a table 
 3. Add Create functionality 
 4. Add Read functionality 
 5. Add Update functionality 
@@ -18,9 +18,10 @@ To do List
 */
 
 /*
-Sunday 
-1. create table
-2. Add new income - frontend 
+Tuesday 
+2. Add Create functionality
+    when user clicks on submit, add entry to database
+    Add error checking capability
 3. Add new income - backend 
 Category: salary, freelance,bonus,investment,divident,gift,refund,other
 */
@@ -60,8 +61,8 @@ function Income(){
 
     //updates state as the user types into the form inputs
     function handleChange(event){
-        console.log("name: ", event.target.name);
-        console.log("value: ", event.target.value);
+        // console.log("name: ", event.target.name);
+        // console.log("value: ", event.target.value);
         // console.log("placeholder: ", event.target.placeholder);
         // console.log("type: ", event.target.type);
 
@@ -86,79 +87,104 @@ function Income(){
         //         [name]: value 
         //     }));
     }
+    /**************************************** Handle submit for when submit is clicked ********************************************************** */
+    async function handleIncomeSubmit(event) {
+        //prevents the default browser form submission(page reload)
+        event.preventDefault();
+        console.log("Form submitted")
+
+        try{
+            const res = await api.post("/income", {
+                description: item.description,
+                source: item.source,
+                amount: item.amount,
+                date:item.date_income
+            });
+            console.log("res: ", res.data)
+        }catch(err){
+            console.log(err);
+        }
+    }
+
+
+
     return(
         <>
         <div className="expense">
-            <table className="table">
-                <thead className="thead-light">
+            <form onSubmit={handleIncomeSubmit}>
+                <table className="table">
+                    <thead className="thead-light">
+                            <tr>
+                                <th>Description</th>
+                                <th>Source</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                    </thead>
+                    <tbody>
                         <tr>
-                            <th>Description</th>
-                            <th>Source</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                            <th>Actions</th>
+                            <td>First paycheck</td>
+                            <td>Salary</td>
+                            <td>5000</td>
+                            <td>2025-01-01</td>
+                            <td>Edit</td>
                         </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>First paycheck</td>
-                        <td>Salary</td>
-                        <td>5000</td>
-                        <td>2025-01-01</td>
-                        <td>Edit</td>
-                    </tr>
-                    <tr>
-                        <td>Freelance income</td>
-                        <td>Freelance</td>
-                        <td>1500</td>
-                        <td>2026-01-22</td>
-                        <td>Delete</td>
-                    </tr>
+                        <tr>
+                            <td>Freelance income</td>
+                            <td>Freelance</td>
+                            <td>1500</td>
+                            <td>2026-01-22</td>
+                            <td>Delete</td>
+                        </tr>
 
-                    {/* Add new form  */}
-                    <tr>
-                        <td>
-                            <FormInput
-                                handleChange={handleChange}
-                                type="text"
-                                name="description" 
-                                placeholder="Enter description"
-                                value = {item.description} //use value that comes from state, hence keeping a single source of truth 
-                            />
-                        </td>
-                        <td>
-                            <FormInput
-                                handleChange={handleChange}
-                                type="text"
-                                name="source"
-                                placeholder="Enter source"
-                                value={item.source}
-                            />
-                        </td>
-                        <td>
-                            <FormInput
-                                handleChange={handleChange}
-                                type="number"
-                                name="amount"
-                                placeholder="Enter amount"
-                                value={item.amount}
-                            />
-                        </td>
-                        <td>
-                            <input 
-                                onChange={handleChange}                                      
-                                type="date"
-                                name="date_income"
-                                value={formatDateForInput(item.date_income)} //formatDateForInput is a function
-                                min="2018-01-01"    //Earliest selectable date
-                                max={getTodayDate()} //Prevents selecting future dates
-                            />  
-                        </td>
-                        <td>Delete</td>
-                    </tr>             
-                </tbody>
+                        {/* Add new form  */}
+                        <tr>
+                            <td>
+                                <FormInput
+                                    handleChange={handleChange}
+                                    type="text"
+                                    name="description" 
+                                    placeholder="Enter description"
+                                    value = {item.description} //use value that comes from state, hence keeping a single source of truth 
+                                />
+                            </td>
+                            <td>
+                                <FormInput
+                                    handleChange={handleChange}
+                                    type="text"
+                                    name="source"
+                                    placeholder="Enter source"
+                                    value={item.source}
+                                />
+                            </td>
+                            <td>
+                                <FormInput
+                                    handleChange={handleChange}
+                                    type="number"
+                                    name="amount"
+                                    placeholder="Enter amount"
+                                    value={item.amount}
+                                />
+                            </td>
+                            <td>
+                                <input 
+                                    onChange={handleChange}                                      
+                                    type="date"
+                                    name="date_income"
+                                    value={formatDateForInput(item.date_income)} //formatDateForInput is a function
+                                    min="2018-01-01"    //Earliest selectable date
+                                    max={getTodayDate()} //Prevents selecting future dates
+                                />  
+                            </td>
+                            <td> 
+                                <button type="submit" > <SendIcon /> </button>
+                            </td>
+                        </tr>             
+                    </tbody>
 
-            </table>
+                </table>
+            </form>
         </div>
         </>
 
