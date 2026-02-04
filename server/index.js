@@ -118,6 +118,7 @@ app.get("/testgrid", async (req,res) =>{
             if database error, send error message
             if success, send success message 
 */
+/***************** REGISTER ******************************************************************************************** */ 
 
 //POST Register route 
 app.post("/register", async (req,res) => {
@@ -153,6 +154,8 @@ app.post("/register", async (req,res) => {
     }
 });
 
+/***************** LOGIN ******************************************************************************************** */ 
+
 //login route
 app.post("/login", (req,res) => {
     const username = req.body.username;
@@ -170,6 +173,8 @@ app.post("/login", (req,res) => {
     - filter transactions by user id 
     - return only the user's transactions 
 */
+/***************** READ ******************************************************************************************** */ 
+
 
 // GET Expense route - to fetch expenses
 app.get("/expense", async (req,res) => {
@@ -217,6 +222,8 @@ app.get("/expense", async (req,res) => {
 
 
 
+
+
 /*
     POST Expense route
 
@@ -229,6 +236,8 @@ app.get("/expense", async (req,res) => {
     - link create/add button in frontend to add info to transaction table 
 
 */
+/***************** CREATE ******************************************************************************************** */ 
+
 // POST Expense route - to handle creating a new expense
 app.post("/expense", async (req,res) => {
 
@@ -315,6 +324,90 @@ app.post("/expense", async (req,res) => {
     }
 
 });
+// POST Income route - to handle creating a new income
+app.post("/income", async (req,res) => {
+
+    //Extract income details from the request body 
+    const description = req.body.description;
+    const source = req.body.source;
+    const amount = req.body.amount;
+    const date = req.body.date;
+   
+    console.log("description: ", description);
+    console.log("source: ", source);
+    console.log("amount: ", amount);
+    console.log("date: ", date);
+
+    //define type of transaction
+    const type_transaction = "income";
+
+    //For testing, define the user's email maually 
+    //Later, this should be obtained from the aunthenticated session
+    const email = process.env.TEST_EMAIL;
+
+    //Error handling for invalid Amount field 
+    const amountNum = Number(amount);
+
+    if ( 
+         amount === undefined ||
+         amount === null ||
+         amount === "" ||
+         isNaN(Number(amount))
+        ){
+        return res.status(400).json({
+            message: "Amount must be a valid number"
+        });
+    }
+
+    //Use parseFloat to return the first floating-point number found within a string "3.14" becomes 3.14
+    const amountValue = parseFloat(amount);
+
+    //Handle amounts less than 0 entered in input form
+    if (amountValue <= 0) {
+    return res.status(400).json({
+        message: "Income amount must be greater than zero"
+    });
+    }
+
+    try{
+        //Query the database to get the user ID associated with the email
+        const result = await db.query("SELECT id FROM users WHERE email = $1 ",[email]);
+
+        //If user does not exist, send status 404
+        //Frontend should handle this and redirect the user to register 
+        if (result.rows.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+        }
+
+        //if user exists, get the user ID 
+        const user_id = result.rows[0].id;
+        console.log("user id: ", user_id);
+
+        //Insert the extracted data into the transactiin table  of the specific user
+        //INSERT does not return rows by default, add RETURNING * to return inseerted record
+        const income = await db.query( "INSERT INTO transactions (user_id,amount,type_transaction,category,date_transaction,description) VALUES ($1,$2,$3,$4,$5,$6) RETURNING * ",[user_id,amountValue,type_transaction,source,date,description]);
+
+        console.log("income: ", income.rows[0]);
+        return res.status(201).json({
+            message: "Income added successfully",
+            income: income.rows[0],
+        });
+
+    }catch(err){
+        //Log any database errors for debugging
+        console.error(err);
+
+        //catch specific post-gres specific error 
+        if (err.code === "22P02"){
+            return res.status(400).json({
+                message:"Invalid numeric input"
+            });
+        }
+        return res.status(500).json({ message: "Server error" });
+    }
+
+});
+
 
 /* UPDATE Route 
     - Ensure transaction belong to the user
@@ -334,6 +427,9 @@ app.post("/expense", async (req,res) => {
     rerender to show the new data  
     
      */
+
+/*************** UPDATE ********************************************************************************************** */ 
+
 //PUT route to update expense of a user
 app.put('/expense/:id',async (req,res) => {
     //Get the expense id that is being updated  from the URL
@@ -398,6 +494,7 @@ app.put('/expense/:id',async (req,res) => {
     rerender  
     
      */
+/**************** DELETE ********************************************************************************************* */ 
 
 app.delete('/expense/:id', async (req,res) => {
     //Get the expense id that is being deleted from the URL
@@ -424,6 +521,7 @@ app.delete('/expense/:id', async (req,res) => {
     }
 });
 
+/***************** START SERVER ******************************************************************************************** */ 
 
 //Start server
 app.listen(port, () =>{
