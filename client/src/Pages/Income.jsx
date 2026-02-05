@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import api from "../api/axios";
 import incomes from "../incomes"; //for testing 
 import FormInput from "../components/FormInput";
@@ -18,12 +18,13 @@ To do List
 
 /*
 Today 
-fix the bug - income entry is showing in the income page 
 Add READ functionality - display all the income data of the user 
-get the user id 
-check the database for all the data of the user
-Map the data into the table 
-
+    when form for new entry is submitted - update state to rerender page 
+    check that data in DB and new data is shown 
+Add drop down list for source column 
+Integrate drop down with back end
+Add EDIT functionality
+Add DELETE functionality
 Category: salary, freelance,bonus,investment,divident,gift,refund,other
 */
 
@@ -42,6 +43,35 @@ function Income(){
         date_income:"",
     });
     
+    //Trigger GET income request when the page first loads
+    useEffect(() => {
+
+        //Async function to fetch income from the backend
+        const fetchIncome = async() => {
+        try{
+            //Send GET request to /income endpoint 
+            const response = await api.get("/income");
+            //Log the data returned from the backend
+            console.log("here");
+            // console.log(response.data.user_expenses);
+            //Get all income dtat of user including id,category, amount,date and time in json
+            const userIncome = response.data.user_income; 
+            console.log(userIncome);
+
+            //Update the income state with income data obtained from the database
+            setIncome(userIncome);
+        }catch(err){
+            //Log any network or server errors
+            console.error(err);
+        }
+        };
+
+        //Call the function to fetch income data
+        fetchIncome();
+
+        //Empty dependency array [] means this runs once 
+    }, []);
+
 
     /**************************************** Handle new income item ********************************************************** */
 
@@ -124,6 +154,50 @@ function Income(){
                             </tr>
                     </thead>
                     <tbody>
+                        {income.map(income =>
+                            <tr>
+                                <td>
+                                    <FormInput
+                                            title="Description"              // Label shown above the input
+                                            handleChange={handleChange}  // pass the id       // Updates state when user types
+                                            type="text"                      // Text input
+                                            name="description"               // Matches item.description in state
+                                            placeholder="Enter description"  // Hint text inside input
+                                            value={income.description}         // Controlled input value        
+                                       />
+                                </td>
+                                <td>
+                                    <FormInput
+                                            title="Category"
+                                            handleChange={handleChange}  // pass the id  
+                                            type="text"
+                                            name="category"
+                                            placeholder="Enter category"
+                                            value={income.category}         
+                                    />
+                                </td>
+                                <td>
+                                    <FormInput
+                                            title="Amount"
+                                            handleChange={handleChange}  // pass the id  
+                                            type="number"
+                                            name="amount"
+                                            placeholder="Enter number"
+                                            value={income.amount}         
+                                     />
+                                </td>
+                                <td>
+                                    <input 
+                                            onChange={handleChange}                                      
+                                            type="date"
+                                            name="date_transaction"
+                                            value={formatDateForInput(income.date_transaction)} //formatDateForInput is a function
+                                            min="2018-01-01"    //Earliest selectable date
+                                            max={getTodayDate} //Prevents selecting future dates
+                                    />  
+                                </td>
+                            </tr>
+                        )}
                         <tr>
                             <td>First paycheck</td>
                             <td>Salary</td>
