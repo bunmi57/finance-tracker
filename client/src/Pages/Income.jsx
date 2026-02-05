@@ -11,18 +11,19 @@ import SendIcon from '@mui/icons-material/Send';
 /*
 To do List
 1. create a form for a new entry 
-3. Add Create functionality 
 4. Add Read functionality 
 5. Add Update functionality 
 5. Add Delete functionality 
 */
 
 /*
-Tuesday 
-2. Add Create functionality
-    when user clicks on submit, add entry to database
-    Add error checking capability
-3. Add new income - backend 
+Today 
+fix the bug - income entry is showing in the income page 
+Add READ functionality - display all the income data of the user 
+get the user id 
+check the database for all the data of the user
+Map the data into the table 
+
 Category: salary, freelance,bonus,investment,divident,gift,refund,other
 */
 
