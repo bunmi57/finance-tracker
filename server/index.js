@@ -223,6 +223,56 @@ app.get("/expense", async (req,res) => {
 
 });
 
+//GET income route - to fetch all income data
+app.get("/income", async (req,res) => {
+    console.log("🔥 GET /income HIT");
+    try{
+
+        //For testing, define the user's email manually 
+        //Later, this should be obtained from the authenticated session
+        const email = process.env.TEST_EMAIL;
+        // console.log("email: ", email);
+
+
+
+        //Query the database to get the user ID associated with the email
+        const result = await db.query("SELECT id FROM users WHERE email = $1 ",[email]);
+        // console.log("Expense route testing");
+        // console.log(result);
+
+        //No need to check if user exist, as expense page will only be revealed after the user logs in
+        //get the user ID 
+        const user_id = result.rows[0].id;
+        // console.log("User id: ",user_id);
+
+        //Filter income by user id 
+        const user_transaction = await db.query("SELECT * FROM transactions WHERE user_id = $1 AND type_transaction = $2", [user_id, "income"]);
+        const income = user_transaction.rows; //js object with id, user_id
+        console.log("income from database: ", user_transaction.rows);
+
+
+        const user_income = []
+
+        //Send a response 
+        return res.status(200).json({
+            message:"GET income route works",
+            //send all the income data of the user 
+            user_income:income
+        });
+
+    }catch (err){
+        console.log(err);
+        return res.status(500).json({
+            message:"Server error"
+        });
+    }
+
+});
+
+
+
+
+
 
 
 
