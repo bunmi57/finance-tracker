@@ -186,6 +186,9 @@ app.get("/expense", async (req,res) => {
         const email = process.env.TEST_EMAIL;
         // console.log("email: ", email);
 
+          //define type of transaction
+          const type_transaction = "expense";
+
         //Query the database to get the user ID associated with the email
         const result = await db.query("SELECT id FROM users WHERE email = $1 ",[email]);
         // console.log("Expense route testing");
@@ -197,7 +200,7 @@ app.get("/expense", async (req,res) => {
         // console.log("User id: ",user_id);
 
         //Filter trnsactions by user id 
-        const user_transaction = await db.query("SELECT * FROM transactions WHERE user_id = $1 ", [user_id]);
+        const user_transaction = await db.query("SELECT * FROM transactions WHERE user_id = $1 AND type_transaction = $2", [user_id, "expense"]);
         const expenses = user_transaction.rows; //js object with id, user_id
         // console.log(user_transaction.rows);
 
